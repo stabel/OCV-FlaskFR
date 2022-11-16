@@ -8,13 +8,15 @@ from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 import joblib
 
-#### Defining Flask App
+#### Defining Flask App 
 app = Flask(__name__)
 
 
 #### Saving Date today in 2 different formats
-datetoday = date.today().strftime("%m_%d_%y")
-datetoday2 = date.today().strftime("%d-%B-%Y")
+def datetoday():
+    return date.today().strftime("%m_%d_%y")
+def datetoday2():
+    return date.today().strftime("%d-%B-%Y")
 
 
 #### Initializing VideoCapture object to access WebCam
@@ -27,8 +29,8 @@ if not os.path.isdir('Attendance'):
     os.makedirs('Attendance')
 if not os.path.isdir('static/faces'):
     os.makedirs('static/faces')
-if f'Attendance-{datetoday}.csv' not in os.listdir('Attendance'):
-    with open(f'Attendance/Attendance-{datetoday}.csv','w') as f:
+if f'Attendance-{datetoday()}.csv' not in os.listdir('Attendance'):
+    with open(f'Attendance/Attendance-{datetoday()}.csv','w') as f:
         f.write('Name,Roll,Time')
 
 
@@ -69,7 +71,7 @@ def train_model():
 
 #### Extract info from today's attendance file in attendance folder
 def extract_attendance():
-    df = pd.read_csv(f'Attendance/Attendance-{datetoday}.csv')
+    df = pd.read_csv(f'Attendance/Attendance-{datetoday()}.csv')
     names = df['Name']
     rolls = df['Roll']
     times = df['Time']
@@ -83,9 +85,9 @@ def add_attendance(name):
     userid = name.split('_')[1]
     current_time = datetime.now().strftime("%H:%M:%S")
     
-    df = pd.read_csv(f'Attendance/Attendance-{datetoday}.csv')
+    df = pd.read_csv(f'Attendance/Attendance-{datetoday()}.csv')
     if int(userid) not in list(df['Roll']):
-        with open(f'Attendance/Attendance-{datetoday}.csv','a') as f:
+        with open(f'Attendance/Attendance-{datetoday()}.csv','a') as f:
             f.write(f'\n{username},{userid},{current_time}')
 
 
@@ -95,14 +97,14 @@ def add_attendance(name):
 @app.route('/')
 def home():
     names,rolls,times,l = extract_attendance()    
-    return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2) 
+    return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2()) 
 
 
 #### This function will run when we click on Take Attendance Button
 @app.route('/start',methods=['GET'])
 def start():
     if 'face_recognition_model.pkl' not in os.listdir('static'):
-        return render_template('home.html',totalreg=totalreg(),datetoday2=datetoday2,mess='There is no trained model in the static folder. Please add a new face to continue.') 
+        return render_template('home.html',totalreg=totalreg(),datetoday2=datetoday2(),mess='There is no trained model in the static folder. Please add a new face to continue.') 
 
     cap = cv2.VideoCapture(0)
     ret = True
@@ -121,7 +123,7 @@ def start():
     cap.release()
     cv2.destroyAllWindows()
     names,rolls,times,l = extract_attendance()    
-    return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2) 
+    return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2()) 
 
 
 #### This function will run when we add a new user
@@ -155,7 +157,7 @@ def add():
     print('Training Model')
     train_model()
     names,rolls,times,l = extract_attendance()    
-    return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2) 
+    return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2()) 
 
 
 #### Our main function which runs the Flask App
