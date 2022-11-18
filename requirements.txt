@@ -5,7 +5,7 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 joblib==1.2.0
 MarkupSafe==2.1.1
-numpy==1.23.4
+numpy==1.21.6
 opencv-python==4.6.0.66
 pandas==1.5.1
 PyLMNN==1.6.4
