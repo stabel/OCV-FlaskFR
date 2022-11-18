@@ -8,7 +8,7 @@ from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 import joblib
 
-#### Defining Flask App 
+#### Defining Flask App
 app = Flask(__name__)
 
 
