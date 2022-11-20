@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 import pandas as pd
 import joblib
+import logging
 
 #### Defining Flask App
 app = Flask(__name__)
@@ -96,6 +97,7 @@ def add_attendance(name):
 #### Our main page
 @app.route('/')
 def home():
+    logging.warning('Home')
     names,rolls,times,l = extract_attendance()    
     return render_template('home.html',names=names,rolls=rolls,times=times,l=l,totalreg=totalreg(),datetoday2=datetoday2()) 
 
@@ -103,9 +105,9 @@ def home():
 #### This function will run when we click on Take Attendance Button
 @app.route('/start',methods=['GET'])
 def start():
+    logging.warning('Start')
     if 'face_recognition_model.pkl' not in os.listdir('static'):
         return render_template('home.html',totalreg=totalreg(),datetoday2=datetoday2(),mess='There is no trained model in the static folder. Please add a new face to continue.') 
-
     cap = cv2.VideoCapture(0)
     ret = True
     while ret:
@@ -129,6 +131,7 @@ def start():
 #### This function will run when we add a new user
 @app.route('/add',methods=['GET','POST'])
 def add():
+    logging.warning('Add')
     newusername = request.form['newusername']
     newuserid = request.form['newuserid']
     userimagefolder = 'static/faces/'+newusername+'_'+str(newuserid)
