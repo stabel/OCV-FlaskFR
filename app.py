@@ -109,6 +109,11 @@ def start():
     if 'face_recognition_model.pkl' not in os.listdir('static'):
         return render_template('home.html',totalreg=totalreg(),datetoday2=datetoday2(),mess='There is no trained model in the static folder. Please add a new face to continue.') 
     cap = cv2.VideoCapture(0)
+    #IS start
+    #Check if camera was opened correctly
+    if not (cap.isOpened()):
+        logging.warning("Could not open video device")
+    #IS stop
     ret = True
     while ret:
         ret,frame = cap.read()
@@ -137,7 +142,7 @@ def add():
     userimagefolder = 'static/faces/'+newusername+'_'+str(newuserid)
     if not os.path.isdir(userimagefolder):
         os.makedirs(userimagefolder)
-    cap = cv2.VideoCapture(-1)
+    cap = cv2.VideoCapture(0)
     i,j = 0,0
     while 1:
         _,frame = cap.read()
